@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { readAuthSession } from "../lib/auth";
 
 const metrics = [
   { label: "Personnes concernées", value: "15M+", detail: "employés domestiques" },
@@ -34,7 +36,15 @@ const jobs = [
   { title: "Aide à domicile", city: "Accra", salary: "260 000 FCFA", badge: "4,9/5" },
 ];
 
-const personaConfig = {
+const personaOrder = ["employeur", "travailleur", "finance"] as const;
+type PersonaKey = (typeof personaOrder)[number];
+
+const personaConfig: Record<PersonaKey, {
+  label: string;
+  title: string;
+  description: string;
+  bullets: string[];
+}> = {
   employeur: {
     label: "Pour l’employeur",
     title: "Recruter avec confiance.",
@@ -77,7 +87,25 @@ const testimonials = [
 ];
 
 export default function Home() {
-  const [selectedPersona, setSelectedPersona] = useState<keyof typeof personaConfig>("employeur");
+  const [selectedPersona, setSelectedPersona] = useState<PersonaKey>("employeur");
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    const session = readAuthSession();
+    if (!session) {
+      router.replace("/login");
+      setIsCheckingSession(false);
+      return;
+    }
+
+    router.replace(session.role === "employeur" ? "/employeur" : "/travailleur");
+    setIsCheckingSession(false);
+  }, [router]);
+
+  if (isCheckingSession) {
+    return null;
+  }
 
   const activePersona = useMemo(() => personaConfig[selectedPersona], [selectedPersona]);
 
@@ -103,7 +131,19 @@ export default function Home() {
               <a href="#contact" className="transition hover:text-slate-900">Contact</a>
             </nav>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <Link
+                href="/employeur"
+                className="hidden rounded-full px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 sm:inline-flex"
+              >
+                Espace employeur
+              </Link>
+              <Link
+                href="/travailleur"
+                className="hidden rounded-full px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 sm:inline-flex"
+              >
+                Espace travailleur
+              </Link>
               <Link
                 href="/login"
                 className="inline-flex rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-100"
@@ -254,9 +294,11 @@ export default function Home() {
               <h3 className="mt-3 text-3xl font-black tracking-tight text-slate-900">Une plateforme pensée pour chaque acteur.</h3>
 
               <div className="mt-6 grid gap-3">
-                {(Object.keys(personaConfig) as Array<keyof typeof personaConfig>).map((key) => (
+                {personaOrder.map((key) => (
                   <button
                     key={key}
+                    type="button"
+                    aria-pressed={selectedPersona === key}
                     onClick={() => setSelectedPersona(key)}
                     className={`rounded-2xl border px-4 py-3 text-left transition ${
                       selectedPersona === key
