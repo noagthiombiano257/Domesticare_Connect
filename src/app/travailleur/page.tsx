@@ -38,6 +38,11 @@ export default function TravailleurPage() {
       return;
     }
 
+    if (session.role !== "travailleur") {
+      router.replace("/employeur");
+      return;
+    }
+
     const state = readDemoState();
     setDemoState(state);
     const savedProfile = state.profiles.find((item) => item.id === blankProfile.id);
@@ -83,7 +88,6 @@ export default function TravailleurPage() {
           <nav aria-label="Navigation principale" className="flex flex-wrap gap-2">
             <Link href="/" className="rounded-full border border-slate-200 px-3 py-2 text-sm hover:bg-slate-100">Accueil</Link>
             <Link href="/employeur" className="rounded-full border border-slate-200 px-3 py-2 text-sm hover:bg-slate-100">Espace employeur</Link>
-            <Link href="/login" className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">Changer de rôle</Link>
             <button type="button" onClick={handleLogout} className="rounded-full border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700 hover:bg-rose-100">Se déconnecter</button>
           </nav>
         </header>

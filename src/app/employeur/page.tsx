@@ -31,6 +31,11 @@ export default function EmployeurPage() {
       return;
     }
 
+    if (session.role !== "employeur") {
+      router.replace("/travailleur");
+      return;
+    }
+
     setDemoState(readDemoState());
   }, [router]);
 
@@ -83,7 +88,6 @@ export default function EmployeurPage() {
           <nav aria-label="Navigation principale" className="flex flex-wrap gap-2">
             <Link href="/" className="rounded-full border border-slate-200 px-3 py-2 text-sm hover:bg-slate-100">Accueil</Link>
             <Link href="/travailleur" className="rounded-full border border-slate-200 px-3 py-2 text-sm hover:bg-slate-100">Espace travailleur</Link>
-            <Link href="/login" className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">Changer de rôle</Link>
             <button type="button" onClick={handleLogout} className="rounded-full border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700 hover:bg-rose-100">Se déconnecter</button>
           </nav>
         </header>
