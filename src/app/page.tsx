@@ -1,9 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
-import { readAuthSession } from "../lib/auth";
+import { useState } from "react";
 
 const metrics = [
   { label: "Personnes concernées", value: "15M+", detail: "employés domestiques" },
@@ -88,26 +86,7 @@ const testimonials = [
 
 export default function Home() {
   const [selectedPersona, setSelectedPersona] = useState<PersonaKey>("employeur");
-  const [isCheckingSession, setIsCheckingSession] = useState(true);
-  const router = useRouter();
-
-  useEffect(() => {
-    const session = readAuthSession();
-    if (!session) {
-      router.replace("/login");
-      setIsCheckingSession(false);
-      return;
-    }
-
-    router.replace(session.role === "employeur" ? "/employeur" : "/travailleur");
-    setIsCheckingSession(false);
-  }, [router]);
-
-  if (isCheckingSession) {
-    return null;
-  }
-
-  const activePersona = useMemo(() => personaConfig[selectedPersona], [selectedPersona]);
+  const activePersona = personaConfig[selectedPersona];
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900">
@@ -168,13 +147,13 @@ export default function Home() {
 
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <Link
-                href="/employeur"
+                href="/login"
                 className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-500"
               >
                 Recruter un candidat
               </Link>
               <Link
-                href="/travailleur"
+                href="/login"
                 className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-100"
               >
                 Créer un profil
@@ -368,7 +347,7 @@ export default function Home() {
             </div>
             <div className="flex flex-wrap gap-3">
               <Link
-                href="/employeur"
+                href="/login"
                 className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50"
               >
                 Démarrer maintenant
