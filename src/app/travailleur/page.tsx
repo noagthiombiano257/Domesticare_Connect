@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 import {
@@ -86,8 +85,6 @@ export default function TravailleurPage() {
             <h1 className="mt-2 text-3xl font-black">Créer mon profil professionnel</h1>
           </div>
           <nav aria-label="Navigation principale" className="flex flex-wrap gap-2">
-            <Link href="/" className="rounded-full border border-slate-200 px-3 py-2 text-sm hover:bg-slate-100">Accueil</Link>
-            <Link href="/employeur" className="rounded-full border border-slate-200 px-3 py-2 text-sm hover:bg-slate-100">Espace employeur</Link>
             <button type="button" onClick={handleLogout} className="rounded-full border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700 hover:bg-rose-100">Se déconnecter</button>
           </nav>
         </header>
